@@ -159,7 +159,7 @@
             try {
 
                 // memached instance resource
-                self::$_instance = new Memcached();
+                self::$_instance = (new Memcached());
 
                 // add servers
                 self::$_instance->addServers($servers);
