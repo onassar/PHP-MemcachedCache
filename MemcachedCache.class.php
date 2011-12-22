@@ -11,7 +11,7 @@
      * Provides accessors for reading, writing  and flushing memcached-based
      * data-stores.
      * 
-     * @author Oliver Nassar <onassar@gmail.com>
+     * @author   Oliver Nassar <onassar@gmail.com>
      * @abstract
      * @todo     implement prefixing, caching server weighting
      * @notes    false values can be stored in cache, and can be returned
