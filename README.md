@@ -1,6 +1,18 @@
 PHP-MemachedCache
 ===
+The PHP-MemcachedCache library includes just one statically accessed class,
+which provides three basic methods (flush, read, write) for manipulating a
+distributed memcached setup.
 
+Additionally, it offers 4 analytics method, and one for initiation (whereby
+caching servers are defined, along with their ports).
+
+This class is meant to provide a clean, organized wrapper for accessing a group
+of caching servers.
+
+Enhancements that will be done include defining a prefix/key for data stored,
+as well as the weighting of individual servers (useful during the maintenance,
+removal and addition process).
 
 ### Connection, Caching &amp; Reading Example
 
