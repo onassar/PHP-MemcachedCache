@@ -14,7 +14,6 @@ as well as the weighting of individual servers (useful during the maintenance,
 removal and addition process).
 
 ### Connection, Caching &amp; Reading Example
-
 The following basic example adds a single server (hosted locally) to the class,
 writes to the data-store, reads from it, and prints out the statistics (which
 includes data-store-request misses, reads and writes):
