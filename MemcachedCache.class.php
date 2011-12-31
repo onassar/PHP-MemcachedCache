@@ -19,11 +19,16 @@
      *           whether or not a value was returned properly
      * @example
      * <code>
+     *     // library inclusions
      *     require_once APP . '/vendors/PHP-MemcachedCache/MemcachedCache.class.php';
+     * 
+     *     // server identification; connection
      *     $servers = array(
      *         array('127.0.0.1', 11211)
      *     );
      *     MemcachedCache::init($servers);
+     * 
+     *     // cache writing; reading; output
      *     MemcachedCache::write('oliver', 'nassar');
      *     echo MemcachedCache::read('oliver');
      *     print_r(MemcachedCache::getStats());
@@ -33,9 +38,11 @@
     abstract class MemcachedCache
     {
         /**
-         * _analytics. Array of query-type frequencies.
+         * _analytics
          * 
-         * @var array
+         * Array of query-type frequencies.
+         * 
+         * @var    array
          * @access protected
          */
         protected static $_analytics = array(
@@ -45,21 +52,25 @@
         );
 
         /**
-         * _instance. Store of the Memcached storage instance
+         * _instance
          * 
-         * @var Memcached
+         * Store of the Memcached storage instance
+         * 
+         * @var    Memcached
          * @access protected
          * @static
          */
         protected static $_instance;
 
         /**
-         * clean function. Replaces spaces (to insure proper storage; memcached
-         *     may choke otherwise).
+         * clean
+         * 
+         * Replaces spaces (to insure proper storage; memcached may choke
+         * otherwise).
          * 
          * @access protected
          * @static
-         * @param string $str
+         * @param  string $str
          * @return string
          */
         protected static function _clean($str)
@@ -68,7 +79,9 @@
         }
 
         /**
-         * flush function. Empties memcached-level data-store.
+         * flush
+         * 
+         * Empties memcached-level data-store.
          * 
          * @access public
          * @static
@@ -93,12 +106,13 @@
         }
 
         /**
-         * getMisses function. Returns the number of memcached-level missed 
-         *     cache reads.
+         * getMisses
+         * 
+         * Returns the number of memcached-level missed cache reads.
          * 
          * @access public
          * @static
-         * @return int number of read/fetch misses for memcached requests
+         * @return integer number of read/fetch misses for memcached requests
          */
         public static function getMisses()
         {
@@ -106,12 +120,13 @@
         }
 
         /**
-         * getReads function. Returns the number of memcached-level successful
-         *     cache reads.
+         * getReads
+         * 
+         * Returns the number of memcached-level successful cache reads.
          * 
          * @access public
          * @static
-         * @return int number of read/fetch requests for memcached
+         * @return integer number of read/fetch requests for memcached
          */
         public static function getReads()
         {
@@ -119,8 +134,10 @@
         }
 
         /**
-         * getStats function. Returns an associative array of memcached-level
-         *     cache performance statistics.
+         * getStats
+         * 
+         * Returns an associative array of memcached-level cache performance
+         * statistics.
          * 
          * @access public
          * @static
@@ -132,12 +149,13 @@
         }
 
         /**
-         * getWrites function. Returns the number of successful memcached-level
-         *     cache writes.
+         * getWrites
+         * 
+         * Returns the number of successful memcached-level cache writes.
          * 
          * @access public
          * @static
-         * @return int number of times a mixed value was written to memcached
+         * @return integer number of times a mixed value was written to memcached
          */
         public static function getWrites()
         {
@@ -145,12 +163,14 @@
         }
 
         /**
-         * init function. Creates and initializes a memcached instance/resource
-         *     with a variable number of servers.
+         * init
+         * 
+         * Creates and initializes a memcached instance/resource with a variable
+         * number of servers.
          * 
          * @access public
          * @static
-         * @param array $servers
+         * @param  array $servers
          * @return void
          */
         public static function init(array $servers)
@@ -173,13 +193,14 @@
         }
 
         /** 
-         * read function. Attempts to read a memcached-level data-store record,
-         *     returning null if it couldn't be accessed. Handles false/null
-         *     return value logic.
+         * read
+         * 
+         * Attempts to read a memcached-level data-store record, returning null
+         * if it couldn't be accessed. Handles false/null return value logic.
          *
          * @access public
          * @static
-         * @param string $key key for the cache position
+         * @param  string $key key for the cache position
          * @return mixed cache record value, or else null if it's not present
          */
         public static function read($key)
@@ -198,9 +219,11 @@
 
                     /**
                      * False value found refers to unsuccessful check: nothing
-                     *     was stored under this key
+                     * was stored under this key
                      */
-                    if (self::$_instance->getResultCode() !== Memcached::RES_SUCCESS) {
+                    if (
+                        self::$_instance->getResultCode() !== Memcached::RES_SUCCESS
+                    ) {
                         ++self::$_analytics['misses'];
                         return null;
                     }
@@ -220,16 +243,19 @@
         }
 
         /**
-         * write function. Writes a value to the memcached data-store, based on 
-         *     the passed in key. Handles false/null value storage logic.
+         * write
+         * 
+         * Writes a value to the memcached data-store, based on the passed in
+         * key. Handles false/null value storage logic.
          * 
          * @access public
          * @static
-         * @param string $key key for the cache value in the hash
-         * @param mixed $value value for the cache key, which cannot be an
-         *     object or object reference
-         * @param int $ttl. (default: 0) time to live (ttl) for the cache value,
-         *     after which it won't be accessible in the store (in seconds)
+         * @param  string $key key for the cache value in the hash
+         * @param  mixed $value value for the cache key, which cannot be an
+         *         object or object reference
+         * @param  integer $ttl. (default: 0) time to live (ttl) for the cache
+         *         value, after which it won't be accessible in the store (in
+         *         seconds)
          * @return void
          */
         public static function write($key, $value, $ttl = 0)
