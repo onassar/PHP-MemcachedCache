@@ -1,7 +1,7 @@
 PHP-MemachedCache
 ===
 The PHP-MemcachedCache library includes just one statically accessed class,
-which provides three basic methods (flush, read, write) for manipulating a
+which provides three basic methods (`flush`, `read`, `write`) for manipulating a
 distributed memcached setup.
 
 Additionally, it offers 4 analytics method, and one for initiation (whereby
