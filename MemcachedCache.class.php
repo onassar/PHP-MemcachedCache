@@ -275,7 +275,7 @@
             try {
 
                 // attempt to store
-                if (self::$_instance->set($key, $value) === false) {
+                if (self::$_instance->set($key, $value, $ttl) === false) {
                     throw new Exception(
                         'MemcacheCache Error: Exception while attempting to ' .
                         'write to resource.'
