@@ -65,7 +65,7 @@
         /**
          * _namespace
          * 
-         * @var    string (default: null)
+         * @var    string
          * @access protected
          */
         protected static $_namespace;
