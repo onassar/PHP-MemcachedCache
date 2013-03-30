@@ -71,7 +71,7 @@
         protected static $_namespace;
 
         /**
-         * clean
+         * _clean
          * 
          * Replaces spaces (to insure proper storage; memcached may choke
          * otherwise).
@@ -219,6 +219,11 @@
          */
         public static function read($key)
         {
+            // ensure namespace set
+            if (is_null(self::$_namespace)) {
+                throw new Exception('Namespace not set');
+            }
+
             // safely attempt to read from Memcached resource
             try {
 
@@ -274,6 +279,11 @@
          */
         public static function write($key, $value, $ttl = 0)
         {
+            // ensure namespace set
+            if (is_null(self::$_namespace)) {
+                throw new Exception('Namespace not set');
+            }
+
             // null value check
             if ($value === null) {
                 throw new Exception(
