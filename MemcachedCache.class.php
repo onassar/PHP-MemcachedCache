@@ -26,7 +26,7 @@
      *     $servers = array(
      *         array('127.0.0.1', 11211)
      *     );
-     *     MemcachedCache::init($servers);
+     *     MemcachedCache::init('namespace', $servers);
      * 
      *     // cache writing; reading; output
      *     MemcachedCache::write('oliver', 'nassar');
@@ -63,6 +63,14 @@
         protected static $_instance;
 
         /**
+         * _namespace
+         * 
+         * @var    string (default: null)
+         * @access protected
+         */
+        protected static $_namespace;
+
+        /**
          * clean
          * 
          * Replaces spaces (to insure proper storage; memcached may choke
@@ -75,7 +83,9 @@
          */
         protected static function _clean($str)
         {
-            return str_replace(' ', '!!{_}!!', $str);
+            $str = (self::$_namespace) . ($str);
+            $str = str_replace(' ', '!!{_}!!', $str);
+            return md5($str);
         }
 
         /**
@@ -170,10 +180,11 @@
          * 
          * @access public
          * @static
+         * @param  string $namespace
          * @param  array $servers
          * @return void
          */
-        public static function init(array $servers)
+        public static function init($namespace, array $servers)
         {
             // safely attempt to handle the resource
             try {
@@ -190,6 +201,9 @@
                     'servers.'
                 );
             }
+
+            // set the namespace
+            self::$_namespace = $namespace;
         }
 
         /** 
