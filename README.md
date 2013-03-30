@@ -26,6 +26,7 @@ includes data-store-request misses, reads and writes):
     
     // server identification; connection
     $servers = array(
+        'namespace',
         array('127.0.0.1', 11211)
     );
     MemcachedCache::init($servers);
