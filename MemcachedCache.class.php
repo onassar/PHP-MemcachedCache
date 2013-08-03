@@ -275,7 +275,6 @@
                         self::$_instance->getResultCode() !== Memcached::RES_SUCCESS
                     ) {
                         ++self::$_analytics['misses'];
-                    el($key);
                         return null;
                     }
                 }
