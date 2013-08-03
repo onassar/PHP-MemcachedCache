@@ -52,6 +52,14 @@
         );
 
         /**
+         * _bypass
+         * 
+         * @var    boolean
+         * @access protected
+         */
+        protected static $_bypass = false;
+
+        /**
          * _instance
          * 
          * Store of the Memcached storage instance
@@ -73,8 +81,9 @@
         /**
          * _clean
          * 
-         * Replaces spaces (to insure proper storage; memcached may choke
-         * otherwise).
+         * Sets a namespace (to allow for multiple environments on the same
+         * caching server), replaces spaces (to insure proper storage; memcached
+         * may choke otherwise), and hashes string.
          * 
          * @access protected
          * @static
@@ -86,6 +95,24 @@
             $str = (self::$_namespace) . ($str);
             $str = str_replace(' ', '!!{_}!!', $str);
             return md5($str);
+        }
+
+        /**
+         * checkForFlushing
+         * 
+         * @note   If you are using memcached for session storage, this will
+         *         clear them!
+         * @access public
+         * @static
+         * @param  string $key
+         * @param  integer $delay (default: 0)
+         * @return void
+         */
+        public static function checkForFlushing($key, $delay = 0)
+        {
+            if (isset($_GET[$key])) {
+                self::flush($delay);
+            }
         }
 
         /**
@@ -227,11 +254,15 @@
             // safely attempt to read from Memcached resource
             try {
 
-                // clean key
-                $key = self::_clean($key);
+                // Bypassing checking
+                if (self::$_bypass === true) {
+                    ++self::$_analytics['misses'];
+                    return null;
+                }
 
-                // check memcached
-                $response = self::$_instance->get($key);
+                // hash key, and check for existance
+                $hashedKey = self::_clean($key);
+                $response = self::$_instance->get($hashedKey);
 
                 // false boolean found
                 if ($response === false) {
@@ -244,6 +275,7 @@
                         self::$_instance->getResultCode() !== Memcached::RES_SUCCESS
                     ) {
                         ++self::$_analytics['misses'];
+                    el($key);
                         return null;
                     }
                 }
@@ -258,6 +290,22 @@
                     'MemcachedCache Error: Exception while attempting to ' .
                     'read from resource.'
                 );
+            }
+        }
+
+        /**
+         * setupBypassing
+         * 
+         * @access public
+         * @static
+         * @param  string $key The key, which if found in _GET, will turn
+         *         caching off
+         * @return void
+         */
+        public static function setupBypassing($key)
+        {
+            if (isset($_GET[$key])) {
+                self::$_bypass = true;
             }
         }
 
