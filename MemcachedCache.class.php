@@ -146,6 +146,7 @@
                 }
                 ++self::$_analytics['deletes'];
             } catch(Exception $exception) {
+el(pr($exception, true));
                 throw new Exception(
                     'MemcacheCache Error: Exception while attempting to ' .
                     'delete node.'
