@@ -46,6 +46,7 @@
          * @access protected
          */
         protected static $_analytics = array(
+            'deletes' => 0,
             'misses' => 0,
             'reads' => 0,
             'writes' => 0
@@ -116,6 +117,43 @@
         }
 
         /**
+         * delete
+         * 
+         * @access public
+         * @static
+         * @param  string $key
+         * @return void
+         */
+        public static function delete($key)
+        {
+            // ensure namespace set
+            if (is_null(self::$_namespace)) {
+                throw new Exception('Namespace not set');
+            }
+
+            // clean the key
+            $key = self::_clean($key);
+
+            // safely attempt to delete a Memcached node
+            try {
+
+                // attempt to delete
+                if (self::$_instance->delete($key, 0) === false) {
+                    throw new Exception(
+                        'MemcacheCache Error: Exception while attempting to ' .
+                        'delete node.'
+                    );
+                }
+                ++self::$_analytics['deletes'];
+            } catch(Exception $exception) {
+                throw new Exception(
+                    'MemcacheCache Error: Exception while attempting to ' .
+                    'delete node.'
+                );
+            }
+        }
+
+        /**
          * flush
          * 
          * Empties memcached-level data-store.
@@ -140,6 +178,18 @@
                     'flush resource.'
                 );
             }
+        }
+
+        /**
+         * getDeletes
+         * 
+         * @access public
+         * @static
+         * @return integer
+         */
+        public static function getDeletes()
+        {
+            return self::$_analytics['deletes'];
         }
 
         /**
