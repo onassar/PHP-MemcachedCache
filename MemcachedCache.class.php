@@ -122,9 +122,10 @@
          * @access public
          * @static
          * @param  string $key
+         * @param  boolean $throwException (false)
          * @return void
          */
-        public static function delete($key)
+        public static function delete($key, $throwException = false)
         {
             // ensure namespace set
             if (is_null(self::$_namespace)) {
@@ -146,12 +147,12 @@
                 }
                 ++self::$_analytics['deletes'];
             } catch(Exception $exception) {
-el(self::$_instance->getResultCode());
-el(pr($exception, true));
-                throw new Exception(
-                    'MemcacheCache Error: Exception while attempting to ' .
-                    'delete node.'
-                );
+                if ($throwException === true) {
+                    throw new Exception(
+                        'MemcacheCache Error: Exception while attempting to ' .
+                        'delete node.'
+                    );
+                }
             }
         }
 
