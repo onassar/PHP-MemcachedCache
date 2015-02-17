@@ -407,6 +407,7 @@
                 }
                 ++self::$_analytics['writes'];
             } catch(Exception $exception) {
+                el($exception->getMessage());
                 throw new Exception(
                     'MemcacheCache Error: Exception while attempting to ' .
                     'write to resource.'
