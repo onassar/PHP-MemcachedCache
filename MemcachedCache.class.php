@@ -128,7 +128,7 @@
         public static function delete($key, $throwException = false)
         {
             // ensure namespace set
-            if (is_null(self::$_namespace)) {
+            if (is_null(self::$_namespace) === true) {
                 throw new Exception('Namespace not set');
             }
 
@@ -300,7 +300,7 @@
         public static function read($key)
         {
             // ensure namespace set
-            if (is_null(self::$_namespace)) {
+            if (is_null(self::$_namespace) === true) {
                 throw new Exception('Namespace not set');
             }
 
@@ -380,7 +380,7 @@
         public static function write($key, $value, $ttl = 0)
         {
             // ensure namespace set
-            if (is_null(self::$_namespace)) {
+            if (is_null(self::$_namespace) === true) {
                 throw new Exception('Namespace not set');
             }
 
