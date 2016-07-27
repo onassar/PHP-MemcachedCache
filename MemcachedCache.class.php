@@ -345,6 +345,72 @@
             }
         }
 
+        /** 
+         * readMulti
+         *
+         * @access public
+         * @static
+         * @param  array $keys
+         * @return array
+         */
+        public static function readMulti(array $keys)
+        {
+            // ensure namespace set
+            if (is_null(self::$_namespace) === true) {
+                throw new Exception('Namespace not set');
+            }
+
+            // safely attempt to read from Memcached resource
+            try {
+
+                // Bypassing checking
+                if (self::$_bypass === true) {
+                    ++self::$_analytics['misses'];
+                    return null;
+                }
+
+                // hash key, and check for existance
+                $hashedKeys = array();
+                foreach ($keys as $key) {
+                    array_push($hashedKeys, self::_clean($key));
+                }
+                $response = self::$_instance->getMulti($hashedKeys);
+
+                // false boolean found
+                if ($response === false) {
+
+                    /**
+                     * False value found refers to unsuccessful check: nothing
+                     * was stored under this key
+                     */
+                    if (
+                        self::$_instance->getResultCode() !== Memcached::RES_SUCCESS
+                    ) {
+                        ++self::$_analytics['misses'];
+                        return array();
+                    }
+                }
+
+                // increment memcached hits
+                ++self::$_analytics['reads'];
+
+                // return response
+                $formattedResponse = array();
+                foreach ($hashedKeys as $index => $value) {
+                    $formattedResponse[$keys[$index]] = false;
+                    if (isset($response[$value]) === true) {
+                        $formattedResponse[$keys[$index]] = $response[$value];
+                    }
+                }
+                return $formattedResponse;
+            } catch(Exception $exception) {
+                throw new Exception(
+                    'MemcachedCache Error: Exception while attempting to ' .
+                    'read multiple obejcts from resource.'
+                );
+            }
+        }
+
         /**
          * setupBypassing
          * 
