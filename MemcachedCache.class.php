@@ -26,7 +26,7 @@
      *     $servers = array(
      *         array('127.0.0.1', 11211)
      *     );
-     *     MemcachedCache::init('namespace', $servers);
+     *     MemcachedCache::init('namespace', $servers, false);
      * 
      *     // cache writing; reading; output
      *     MemcachedCache::write('oliver', 'nassar');
@@ -53,12 +53,28 @@
         );
 
         /**
+         * _benchmark
+         * 
+         * @var    boolean (default: false)
+         * @access protected
+         */
+        protected static $_benchmark = false;
+
+        /**
          * _bypass
          * 
          * @var    boolean
          * @access protected
          */
         protected static $_bypass = false;
+
+        /**
+         * _duration
+         * 
+         * @var    integer (default: 0)
+         * @access protected
+         */
+        protected static $_duration = 0;
 
         /**
          * _instance
@@ -196,6 +212,17 @@
         }
 
         /**
+         * getDuration
+         * 
+         * @access public
+         * @return float
+         */
+        public static function getDuration()
+        {
+            return self::$_duration;
+        }
+
+        /**
          * getMisses
          * 
          * Returns the number of memcached-level missed cache reads.
@@ -262,10 +289,15 @@
          * @static
          * @param  string $namespace
          * @param  array $servers
+         * @param  boolean $benchmark (default: false)
          * @return void
          */
-        public static function init($namespace, array $servers)
-        {
+        public static function init(
+            $namespace,
+            array $servers,
+            $benchmark = false
+        ) {
+            self::$_benchmark = $benchmark;
             // safely attempt to handle the resource
             try {
 
@@ -315,7 +347,14 @@
 
                 // hash key, and check for existance
                 $hashedKey = self::_clean($key);
-                $response = self::$_instance->get($hashedKey);
+                if (self::$_benchmark == true) {
+                    $start = microtime(true);
+                    $response = self::$_instance->get($hashedKey);
+                    $end = microtime(true);
+                    self::$_duration += round($end - $start, 4);
+                } else {
+                    $response = self::$_instance->get($hashedKey);
+                }
 
                 // false boolean found
                 if ($response === false) {
@@ -374,7 +413,14 @@
                 foreach ($keys as $key) {
                     array_push($hashedKeys, self::_clean($key));
                 }
-                $response = self::$_instance->getMulti($hashedKeys);
+                if (self::$_benchmark == true) {
+                    $start = microtime(true);
+                    $response = self::$_instance->getMulti($hashedKeys);
+                    $end = microtime(true);
+                    self::$_duration += round($end - $start, 4);
+                } else {
+                    $response = self::$_instance->getMulti($hashedKeys);
+                }
 
                 // false boolean found
                 if ($response === false) {
