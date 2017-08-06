@@ -405,7 +405,7 @@
                 // Bypassing checking
                 if (self::$_bypass === true) {
                     ++self::$_analytics['misses'];
-                    return null;
+                    return array_fill_keys($keys, false);
                 }
 
                 // hash key, and check for existance
@@ -433,7 +433,7 @@
                         self::$_instance->getResultCode() !== Memcached::RES_SUCCESS
                     ) {
                         ++self::$_analytics['misses'];
-                        return array();
+                        return array_fill_keys($keys, false);
                     }
                 }
 
