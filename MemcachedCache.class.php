@@ -44,6 +44,7 @@
          * 
          * @var    array
          * @access protected
+         * @static
          */
         protected static $_analytics = array(
             'deletes' => 0,
@@ -57,14 +58,16 @@
          * 
          * @var    boolean (default: false)
          * @access protected
+         * @static
          */
         protected static $_benchmark = false;
 
         /**
          * _bypass
          * 
-         * @var    boolean
+         * @var    boolean (default: false)
          * @access protected
+         * @static
          */
         protected static $_bypass = false;
 
@@ -73,6 +76,7 @@
          * 
          * @var    integer (default: 0)
          * @access protected
+         * @static
          */
         protected static $_duration = 0;
 
@@ -92,6 +96,7 @@
          * 
          * @var    string
          * @access protected
+         * @static
          */
         protected static $_namespace;
 
@@ -127,7 +132,7 @@
          */
         public static function checkForFlushing($key, $delay = 0)
         {
-            if (isset($_GET[$key])) {
+            if (isset($_GET[$key]) === true) {
                 self::flush($delay);
             }
         }
@@ -135,40 +140,32 @@
         /**
          * delete
          * 
+         * @throws Exception
          * @access public
          * @static
          * @param  string $key
-         * @param  boolean $throwException (false)
          * @return void
          */
-        public static function delete($key, $throwException = false)
+        public static function delete($key)
         {
             // ensure namespace set
             if (is_null(self::$_namespace) === true) {
                 throw new Exception('Namespace not set');
             }
 
-            // clean the key
-            $key = self::_clean($key);
-
             // safely attempt to delete a Memcached node
             try {
-
-                // attempt to delete
+                $key = self::_clean($key);
                 if (self::$_instance->delete($key, 0) === false) {
+                    $resultCode = self::$_instance->getResultCode();
                     throw new Exception(
                         'MemcacheCache Error: Exception while attempting to ' .
-                        'delete node.'
+                        'delete node (result code: ' . ($resultCode) . ')'
                     );
                 }
                 ++self::$_analytics['deletes'];
             } catch(Exception $exception) {
-                if ($throwException === true) {
-                    throw new Exception(
-                        'MemcacheCache Error: Exception while attempting to ' .
-                        'delete node.'
-                    );
-                }
+                throw new Exception($exception->getMessage());
             }
         }
 
@@ -177,8 +174,10 @@
          * 
          * Empties memcached-level data-store.
          * 
+         * @throws Exception
          * @access public
          * @static
+         * @param  integer $delay (default: 0)
          * @return void
          */
         public static function flush($delay = 0)
@@ -186,16 +185,14 @@
             // safely try to flush resource
             try {
                 if (self::$_instance->flush($delay) === false) {
+                    $resultCode = self::$_instance->getResultCode();
                     throw new Exception(
                         'MemcachedCache Error: Exception while attempting to ' .
-                        'flush resource.'
+                        'flush resource (result code: ' . ($resultCode) . ')'
                     );
                 }
             } catch(Exception $exception) {
-                throw new Exception(
-                    'MemcachedCache Error: Exception while attempting to ' .
-                    'flush resource.'
-                );
+                throw new Exception($exception->getMessage());
             }
         }
 
@@ -215,6 +212,7 @@
          * getDuration
          * 
          * @access public
+         * @static
          * @return float
          */
         public static function getDuration()
@@ -285,6 +283,7 @@
          * Creates and initializes a memcached instance/resource with a variable
          * number of servers.
          * 
+         * @throws Exception
          * @access public
          * @static
          * @param  string $namespace
@@ -297,25 +296,20 @@
             array $servers,
             $benchmark = false
         ) {
+            // local static variables
+            self::$_namespace = $namespace;
             self::$_benchmark = $benchmark;
+
             // safely attempt to handle the resource
             try {
-
-                // memached instance resource
-                self::$_instance = (new Memcached());
-
-                // add servers
+                self::$_instance = new Memcached();
                 self::$_instance->addServers($servers);
-
             } catch(Exception $exception) {
                 throw new Exception(
                     'MemcachedCache Error: Exception while attempting to add ' .
                     'servers.'
                 );
             }
-
-            // set the namespace
-            self::$_namespace = $namespace;
         }
 
         /** 
@@ -324,6 +318,7 @@
          * Attempts to read a memcached-level data-store record, returning null
          * if it couldn't be accessed. Handles false/null return value logic.
          *
+         * @throws Exception
          * @access public
          * @static
          * @param  string $key key for the cache position
@@ -387,6 +382,7 @@
         /** 
          * readMulti
          *
+         * @throws Exception
          * @access public
          * @static
          * @param  array $keys
@@ -452,7 +448,7 @@
             } catch(Exception $exception) {
                 throw new Exception(
                     'MemcachedCache Error: Exception while attempting to ' .
-                    'read multiple obejcts from resource.'
+                    'read multiple objects from resource.'
                 );
             }
         }
@@ -468,7 +464,7 @@
          */
         public static function setupBypassing($key)
         {
-            if (isset($_GET[$key])) {
+            if (isset($_GET[$key]) === true) {
                 self::$_bypass = true;
             }
         }
@@ -479,6 +475,7 @@
          * Writes a value to the memcached data-store, based on the passed in
          * key. Handles false/null value storage logic.
          * 
+         * @throws Exception
          * @access public
          * @static
          * @param  string $key key for the cache value in the hash
@@ -504,26 +501,21 @@
                 );
             }
 
-            // clean the key
-            $key = self::_clean($key);
-
             // safely attempt to write to Memcached resource
             try {
 
                 // attempt to store
+                $key = self::_clean($key);
                 if (self::$_instance->set($key, $value, $ttl) === false) {
+                    $resultCode = self::$_instance->getResultCode();
                     throw new Exception(
                         'MemcacheCache Error: Exception while attempting to ' .
-                        'write to resource.'
+                        'write to resource (result code: ' . ($resultCode) . ')'
                     );
                 }
                 ++self::$_analytics['writes'];
             } catch(Exception $exception) {
-                el($exception->getMessage());
-                throw new Exception(
-                    'MemcacheCache Error: Exception while attempting to ' .
-                    'write to resource.'
-                );
+                throw new Exception($exception->getMessage());
             }
         }
     }
