@@ -1,7 +1,7 @@
 <?php
 
     // dependecy checks
-    if (!in_array('memcached', get_loaded_extensions())) {
+    if (in_array('memcached', get_loaded_extensions()) === false) {
         throw new Exception('Memcached extension needs to be installed.');
     }
 
@@ -11,12 +11,11 @@
      * Provides accessors for reading, writing  and flushing memcached-based
      * data-stores.
      * 
-     * @author   Oliver Nassar <onassar@gmail.com>
      * @abstract
-     * @todo     implement prefixing, caching server weighting
-     * @notes    false values can be stored in cache, and can be returned
-     *           properly based on memcached's flag which allows access to
-     *           whether or not a value was returned properly
+     * @todo    implement prefixing, caching server weighting
+     * @note    false values can be stored in cache, and can be returned
+     *          properly based on memcached's flag which allows access to
+     *          whether or not a value was returned properly
      * @example
      * <code>
      *     // library inclusions
@@ -34,6 +33,8 @@
      *     print_r(MemcachedCache::getStats());
      *     exit(0);
      * </code>
+     * @link    https://github.com/onassar/PHP-MemcachedCache
+     * @author  Oliver Nassar <onassar@gmail.com>
      */
     abstract class MemcachedCache
     {
@@ -42,8 +43,8 @@
          * 
          * Array of query-type frequencies.
          * 
-         * @var    array
-         * @access protected
+         * @var     array
+         * @access  protected
          * @static
          */
         protected static $_analytics = array(
@@ -56,8 +57,8 @@
         /**
          * _benchmark
          * 
-         * @var    boolean (default: false)
-         * @access protected
+         * @var     boolean (default: false)
+         * @access  protected
          * @static
          */
         protected static $_benchmark = false;
@@ -65,8 +66,8 @@
         /**
          * _bypass
          * 
-         * @var    boolean (default: false)
-         * @access protected
+         * @var     boolean (default: false)
+         * @access  protected
          * @static
          */
         protected static $_bypass = false;
@@ -74,8 +75,8 @@
         /**
          * _duration
          * 
-         * @var    integer (default: 0)
-         * @access protected
+         * @var     integer (default: 0)
+         * @access  protected
          * @static
          */
         protected static $_duration = 0;
@@ -85,8 +86,8 @@
          * 
          * Store of the Memcached storage instance
          * 
-         * @var    Memcached
-         * @access protected
+         * @var     Memcached
+         * @access  protected
          * @static
          */
         protected static $_instance;
@@ -94,8 +95,8 @@
         /**
          * _namespace
          * 
-         * @var    string
-         * @access protected
+         * @var     string
+         * @access  protected
          * @static
          */
         protected static $_namespace;
@@ -107,10 +108,10 @@
          * caching server), replaces spaces (to insure proper storage; memcached
          * may choke otherwise), and hashes string.
          * 
-         * @access protected
+         * @access  protected
          * @static
-         * @param  string $str
-         * @return string
+         * @param   string $str
+         * @return  string
          */
         protected static function _clean($str)
         {
@@ -122,13 +123,13 @@
         /**
          * checkForFlushing
          * 
-         * @note   If you are using memcached for session storage, this will
-         *         clear them!
-         * @access public
+         * @note    If you are using memcached for session storage, this will
+         *          clear them!
+         * @access  public
          * @static
-         * @param  string $key
-         * @param  integer $delay (default: 0)
-         * @return void
+         * @param   string $key
+         * @param   integer $delay (default: 0)
+         * @return  void
          */
         public static function checkForFlushing($key, $delay = 0)
         {
@@ -140,11 +141,11 @@
         /**
          * delete
          * 
-         * @throws Exception
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @param  string $key
-         * @return void
+         * @param   string $key
+         * @return  void
          */
         public static function delete($key)
         {
@@ -174,11 +175,11 @@
          * 
          * Empties memcached-level data-store.
          * 
-         * @throws Exception
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @param  integer $delay (default: 0)
-         * @return void
+         * @param   integer $delay (default: 0)
+         * @return  void
          */
         public static function flush($delay = 0)
         {
@@ -199,9 +200,9 @@
         /**
          * getDeletes
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return integer
+         * @return  integer
          */
         public static function getDeletes()
         {
@@ -211,9 +212,9 @@
         /**
          * getDuration
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return float
+         * @return  float
          */
         public static function getDuration()
         {
@@ -225,9 +226,9 @@
          * 
          * Returns the number of memcached-level missed cache reads.
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return integer number of read/fetch misses for memcached requests
+         * @return  integer number of read/fetch misses for memcached requests
          */
         public static function getMisses()
         {
@@ -239,9 +240,9 @@
          * 
          * Returns the number of memcached-level successful cache reads.
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return integer number of read/fetch requests for memcached
+         * @return  integer number of read/fetch requests for memcached
          */
         public static function getReads()
         {
@@ -254,9 +255,9 @@
          * Returns an associative array of memcached-level cache performance
          * statistics.
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return array associative array of key memcached statistics
+         * @return  array associative array of key memcached statistics
          */
         public static function getStats()
         {
@@ -268,9 +269,9 @@
          * 
          * Returns the number of successful memcached-level cache writes.
          * 
-         * @access public
+         * @access  public
          * @static
-         * @return integer number of times a mixed value was written to memcached
+         * @return  integer number of times a mixed value was written to memcached
          */
         public static function getWrites()
         {
@@ -283,13 +284,13 @@
          * Creates and initializes a memcached instance/resource with a variable
          * number of servers.
          * 
-         * @throws Exception
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @param  string $namespace
-         * @param  array $servers
-         * @param  boolean $benchmark (default: false)
-         * @return void
+         * @param   string $namespace
+         * @param   array $servers
+         * @param   boolean $benchmark (default: false)
+         * @return  void
          */
         public static function init(
             $namespace,
@@ -318,11 +319,11 @@
          * Attempts to read a memcached-level data-store record, returning null
          * if it couldn't be accessed. Handles false/null return value logic.
          *
-         * @throws Exception
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @param  string $key key for the cache position
-         * @return mixed cache record value, or else null if it's not present
+         * @param   string $key key for the cache position
+         * @return  mixed cache record value, or else null if it's not present
          */
         public static function read($key)
         {
@@ -382,11 +383,11 @@
         /** 
          * readMulti
          *
-         * @throws Exception
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @param  array $keys
-         * @return array
+         * @param   array $keys
+         * @return  array
          */
         public static function readMulti(array $keys)
         {
@@ -456,11 +457,11 @@
         /**
          * setupBypassing
          * 
-         * @access public
+         * @access  public
          * @static
-         * @param  string $key The key, which if found in _GET, will turn
-         *         caching off
-         * @return void
+         * @param   string $key The key, which if found in _GET, will turn
+         *          caching off
+         * @return  void
          */
         public static function setupBypassing($key)
         {
@@ -475,16 +476,16 @@
          * Writes a value to the memcached data-store, based on the passed in
          * key. Handles false/null value storage logic.
          * 
-         * @throws Exception
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @param  string $key key for the cache value in the hash
-         * @param  mixed $value value for the cache key, which cannot be an
-         *         object or object reference
-         * @param  integer $ttl. (default: 0) time to live (ttl) for the cache
-         *         value, after which it won't be accessible in the store (in
-         *         seconds)
-         * @return void
+         * @param   string $key key for the cache value in the hash
+         * @param   mixed $value value for the cache key, which cannot be an
+         *          object or object reference
+         * @param   integer $ttl. (default: 0) time to live (ttl) for the cache
+         *          value, after which it won't be accessible in the store (in
+         *          seconds)
+         * @return  void
          */
         public static function write($key, $value, $ttl = 0)
         {
