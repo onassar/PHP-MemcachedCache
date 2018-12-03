@@ -476,6 +476,7 @@
          * Writes a value to the memcached data-store, based on the passed in
          * key. Handles false/null value storage logic.
          * 
+         * @see     https://stackoverflow.com/questions/1418324/memcache-maximum-key-expiration-time
          * @throws  Exception
          * @access  public
          * @static
@@ -507,6 +508,9 @@
 
                 // attempt to store
                 $key = self::_clean($key);
+                if ($ttl > 30 * 24 * 60 * 60) {
+                    $ttl = time() + ($ttl);
+                }
                 if (self::$_instance->set($key, $value, $ttl) === false) {
                     $resultCode = self::$_instance->getResultCode();
                     throw new Exception(
