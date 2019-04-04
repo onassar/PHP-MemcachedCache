@@ -57,7 +57,7 @@
         /**
          * _benchmark
          * 
-         * @var     boolean (default: false)
+         * @var     bool (default: false)
          * @access  protected
          * @static
          */
@@ -66,7 +66,7 @@
         /**
          * _bypass
          * 
-         * @var     boolean (default: false)
+         * @var     bool (default: false)
          * @access  protected
          * @static
          */
@@ -289,7 +289,7 @@
          * @static
          * @param   string $namespace
          * @param   array $servers
-         * @param   boolean $benchmark (default: false)
+         * @param   bool $benchmark (default: false)
          * @return  void
          */
         public static function init(
