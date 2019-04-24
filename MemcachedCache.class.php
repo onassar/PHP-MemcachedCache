@@ -43,8 +43,8 @@
          * 
          * Array of query-type frequencies.
          * 
-         * @var     array
          * @access  protected
+         * @var     array
          * @static
          */
         protected static $_analytics = array(
@@ -57,8 +57,8 @@
         /**
          * _benchmark
          * 
-         * @var     bool (default: false)
          * @access  protected
+         * @var     bool (default: false)
          * @static
          */
         protected static $_benchmark = false;
@@ -66,8 +66,8 @@
         /**
          * _bypass
          * 
-         * @var     bool (default: false)
          * @access  protected
+         * @var     bool (default: false)
          * @static
          */
         protected static $_bypass = false;
@@ -75,8 +75,8 @@
         /**
          * _duration
          * 
-         * @var     integer (default: 0)
          * @access  protected
+         * @var     int (default: 0)
          * @static
          */
         protected static $_duration = 0;
@@ -86,8 +86,8 @@
          * 
          * Store of the Memcached storage instance
          * 
-         * @var     Memcached
          * @access  protected
+         * @var     Memcached
          * @static
          */
         protected static $_instance;
@@ -95,8 +95,8 @@
         /**
          * _namespace
          * 
-         * @var     string
          * @access  protected
+         * @var     string
          * @static
          */
         protected static $_namespace;
@@ -128,7 +128,7 @@
          * @access  public
          * @static
          * @param   string $key
-         * @param   integer $delay (default: 0)
+         * @param   int $delay (default: 0)
          * @return  void
          */
         public static function checkForFlushing($key, $delay = 0)
@@ -178,7 +178,7 @@
          * @throws  Exception
          * @access  public
          * @static
-         * @param   integer $delay (default: 0)
+         * @param   int $delay (default: 0)
          * @return  void
          */
         public static function flush($delay = 0)
@@ -202,7 +202,7 @@
          * 
          * @access  public
          * @static
-         * @return  integer
+         * @return  int
          */
         public static function getDeletes()
         {
@@ -228,7 +228,7 @@
          * 
          * @access  public
          * @static
-         * @return  integer number of read/fetch misses for memcached requests
+         * @return  int number of read/fetch misses for memcached requests
          */
         public static function getMisses()
         {
@@ -242,7 +242,7 @@
          * 
          * @access  public
          * @static
-         * @return  integer number of read/fetch requests for memcached
+         * @return  int number of read/fetch requests for memcached
          */
         public static function getReads()
         {
@@ -271,7 +271,7 @@
          * 
          * @access  public
          * @static
-         * @return  integer number of times a mixed value was written to memcached
+         * @return  int number of times a mixed value was written to memcached
          */
         public static function getWrites()
         {
@@ -483,7 +483,7 @@
          * @param   string $key key for the cache value in the hash
          * @param   mixed $value value for the cache key, which cannot be an
          *          object or object reference
-         * @param   integer $ttl. (default: 0) time to live (ttl) for the cache
+         * @param   int $ttl. (default: 0) time to live (ttl) for the cache
          *          value, after which it won't be accessible in the store (in
          *          seconds)
          * @return  void
