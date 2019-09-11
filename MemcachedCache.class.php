@@ -343,7 +343,7 @@
 
                 // hash key, and check for existance
                 $hashedKey = self::_clean($key);
-                if (self::$_benchmark == true) {
+                if (self::$_benchmark === true) {
                     $start = microtime(true);
                     $response = self::$_instance->get($hashedKey);
                     $end = microtime(true);
@@ -410,7 +410,7 @@
                 foreach ($keys as $key) {
                     array_push($hashedKeys, self::_clean($key));
                 }
-                if (self::$_benchmark == true) {
+                if (self::$_benchmark === true) {
                     $start = microtime(true);
                     $response = self::$_instance->getMulti($hashedKeys);
                     $end = microtime(true);
