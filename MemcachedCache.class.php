@@ -318,7 +318,7 @@
          * 
          * Attempts to read a memcached-level data-store record, returning null
          * if it couldn't be accessed. Handles false/null return value logic.
-         *
+         * 
          * @throws  Exception
          * @access  public
          * @static
@@ -382,7 +382,7 @@
 
         /** 
          * readMulti
-         *
+         * 
          * @throws  Exception
          * @access  public
          * @static
