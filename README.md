@@ -19,22 +19,19 @@ writes to the data-store, reads from it, and prints out the statistics (which
 includes data-store-request misses, reads and writes):
 
 ``` php
-<?php
+// library inclusions
+require_once APP . '/vendors/PHP-MemcachedCache/MemcachedCache.class.php';
 
-    // library inclusions
-    require_once APP . '/vendors/PHP-MemcachedCache/MemcachedCache.class.php';
-    
-    // server identification; connection
-    $servers = array(
-        'namespace',
-        array('127.0.0.1', 11211)
-    );
-    MemcachedCache::init($servers);
-    
-    // cache writing; reading; output
-    MemcachedCache::write('oliver', 'nassar');
-    echo MemcachedCache::read('oliver');
-    print_r(MemcachedCache::getStats());
-    exit(0);
+// server identification; connection
+$servers = array(
+    'namespace',
+    array('127.0.0.1', 11211)
+);
+MemcachedCache::init($servers);
 
+// cache writing; reading; output
+MemcachedCache::write('oliver', 'nassar');
+echo MemcachedCache::read('oliver');
+print_r(MemcachedCache::getStats());
+exit(0);
 ```
